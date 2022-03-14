@@ -29,5 +29,16 @@ function turnClick(square) {
 }
 function turn(squareId, player) {
   origBoard[squareId] = player;
-  document.getElementById(squareId).innerText = player; 
+  document.getElementById(squareId).innerText = player;
+  let gamewon = checkWin(origBoard, player);
+  if (gamewon) gameOver(gamewon)
+}
+function checkWin(board, player) {
+  let plays = board.reduce((a, e, i) => (e === player) ? a.concat(i) : a, []);
+  let gamewon = null;
+  for (let [index, win] of winCombos.entries()) {
+    // console.log(index, win.every(e => console.log(e)))
+    win.every(e => console.log(e))
+  }
+  return gamewon
 }
