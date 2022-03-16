@@ -31,14 +31,26 @@ function turn(squareId, player) {
   origBoard[squareId] = player;
   document.getElementById(squareId).innerText = player;
   let gamewon = checkWin(origBoard, player);
-  if (gamewon) gameOver(gamewon)
+  if (gamewon) gameOver(gamewon);
 }
 function checkWin(board, player) {
-  let plays = board.reduce((a, e, i) => (e === player) ? a.concat(i) : a, []);
+  let plays = board.reduce((a, e, i) => (e === player ? a.concat(i) : a), []);
   let gamewon = null;
   for (let [index, win] of winCombos.entries()) {
-    // console.log(index, win.every(e => console.log(e)))
-    win.every(e => console.log(e))
+    if (win.every((e) => plays.indexOf(e) > -1)) {
+      gamewon = { index: index, player: player };
+      break;
+    }
   }
-  return gamewon
+  return gamewon;
+}
+
+function gameOver(gamewon) {
+  for (let index of winCombos[gamewon.index]) {
+    document.getElementById(index).style.backgroundColor =
+      gamewon.player == huPlayer ? "blue" : "red";
+  }
+  for (var i = 0; i < cells.length; i++) {
+    cells[i].removeEventListener("click", turnClick, false);
+  }
 }
