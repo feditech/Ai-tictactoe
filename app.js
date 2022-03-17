@@ -37,8 +37,14 @@ function checkWin(board, player) {
   let plays = board.reduce((a, e, i) => (e === player) ? a.concat(i) : a, []);
   let gamewon = null;
   for (let [index, win] of winCombos.entries()) {
-    // console.log(index, win.every(e => console.log(e)))
-    win.every(e => console.log(e))
+    if (win.every(e => plays.indexOf(e) > -1)) {
+      gamewon = { index: index, player: player }
+      break
+    }
   }
   return gamewon
+}
+
+function gameOver(gamewon) {
+  console.log(gamewon)
 }
