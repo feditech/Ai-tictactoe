@@ -25,24 +25,66 @@ function startGame() {
   }
 }
 function turnClick(square) {
-  turn(square.target.id, huPlayer);
+  if (typeof origBoard[square.target.id] == "number") {
+    turn(square.target.id, huPlayer);
+    if (!checkTie()) {
+      turn(bestspot(), aiPlayer);
+    }
+  }
 }
 function turn(squareId, player) {
   origBoard[squareId] = player;
   document.getElementById(squareId).innerText = player;
   let gamewon = checkWin(origBoard, player);
-  if (gamewon) gameOver(gamewon)
+  if (gamewon) gameOver(gamewon);
 }
 function checkWin(board, player) {
-  let plays = board.reduce((a, e, i) => (e === player) ? a.concat(i) : a, []);
+  let plays = board.reduce((a, e, i) => (e === player ? a.concat(i) : a), []);
   let gamewon = null;
   for (let [index, win] of winCombos.entries()) {
-    if (win.every(e => plays.indexOf(e) > -1)) {
-      gamewon = { index: index, player: player }
-      break
+
+    if (win.every((e) => plays.indexOf(e) > -1)) {
+      gamewon = { index: index, player: player };
+      break;
     }
   }
-  return gamewon
+  return gamewon;
+}
+
+function gameOver(gamewon) {
+  for (let index of winCombos[gamewon.index]) {
+    document.getElementById(index).style.backgroundColor =
+      gamewon.player == huPlayer ? "blue" : "red";
+  }
+  for (var i = 0; i < cells.length; i++) {
+    cells[i].removeEventListener("click", turnClick, false);
+  }
+  declareWinner(gamewon.player == huPlayer ? "you win" : "you lose");
+}
+
+function declareWinner(who) {
+  document.querySelector(".endgame").style.display = "flex";
+  document.querySelector(".endgame .text").innerText = who;
+}
+
+function emptysquares() {
+  return origBoard.filter((s) => typeof s === "number");
+}
+
+function bestspot() {
+  return emptysquares()[0];
+}
+
+function checkTie() {
+  if (emptysquares().length == 0) {
+    for (var i = 0; i < cells.length; i++) {
+      document.getElementById(i).style.background = "green";
+      cells[i].removeEventListener("click", turnClick, false);
+    }
+    declareWinner("Tie Game");
+    return true;
+  }
+  return false;
 }
 
 function gameOver(gamewon) {
