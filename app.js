@@ -86,7 +86,3 @@ function checkTie() {
   }
   return false;
 }
-
-function gameOver(gamewon) {
-  console.log(gamewon)
-}
